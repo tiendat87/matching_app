@@ -5,8 +5,8 @@ const API_BASE = "/api";
 export interface ProfileData {
   displayName: string;
   birthdate: string;
-  gender: "male" | "female" | "other";
-  lookingFor: "male" | "female" | "both";
+  gender: "male" | "female";
+  lookingFor: "male" | "female";
   lookingForAgeMin: number;
   lookingForAgeMax: number;
   city: string;
@@ -36,5 +36,11 @@ export interface ProfileData {
 
 export async function submitProfile(data: ProfileData) {
   const response = await axios.post(`${API_BASE}/profiles`, data);
+  return response.data;
+}
+export async function citySuggestion(cityQuery: string) {
+  const response = await axios.get(`${API_BASE}/city/suggestions`, {
+    params: { q: cityQuery },
+  });
   return response.data;
 }

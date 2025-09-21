@@ -10,6 +10,7 @@ import {
   getProfiles,
   runMatching,
 } from "./controllers/profileController";
+import { getCitySuggestions } from "./controllers/citySuggestionController";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get("/health", (req, res) => {
 
 app.post("/profiles", validate(profileSchema), createProfile);
 app.get("/profiles", getProfiles);
+app.get("/city/suggestions", getCitySuggestions);
 app.post("/run-matching", requireApiKey, runMatching);
 
 export default app;
