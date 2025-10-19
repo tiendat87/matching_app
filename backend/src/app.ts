@@ -34,7 +34,12 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.post("/profiles", validate(profileSchema), createProfile);
+app.post(
+  "/profiles",
+  upload.array("images", 6),
+  validate(profileSchema),
+  createProfile
+);
 app.get("/profiles", getProfiles);
 app.get("/city/suggestions", getCitySuggestions);
 app.post("/run-matching", requireApiKey, runMatching);

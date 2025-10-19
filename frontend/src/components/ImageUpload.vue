@@ -92,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, defineProps } from "vue";
+import { ref, defineEmits, defineProps, watch } from "vue";
 import axios from "axios";
 
 // Icons (you can use heroicons or any icon library)
@@ -123,6 +123,15 @@ const fileInput = ref<HTMLInputElement>();
 const uploading = ref(false);
 const uploadError = ref("");
 
+// Watch for changes in images array
+watch(
+  images,
+  (newImages) => {
+    console.log("Images array changed:", newImages);
+  },
+  { deep: true }
+);
+
 const triggerFileInput = () => {
   fileInput.value?.click();
 };
@@ -130,6 +139,9 @@ const triggerFileInput = () => {
 const handleFileSelect = async (event: Event) => {
   const target = event.target as HTMLInputElement;
   const files = Array.from(target.files || []);
+
+  console.log("Files selected:", files);
+  console.log("Current images length:", images.value.length);
 
   if (images.value.length + files.length > 6) {
     uploadError.value = `Maximum 6 images allowed. You can add ${
@@ -142,19 +154,30 @@ const handleFileSelect = async (event: Event) => {
 
   // If profileId exists, upload immediately
   if (props.profileId) {
+    console.log("ProfileId exists, uploading to server");
     await uploadToServer(files);
   } else {
+    console.log("No profileId, creating previews");
     // Otherwise, just preview
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        images.value.push({
-          preview: e.target?.result as string,
-          file: file,
-        });
-      };
-      reader.readAsDataURL(file);
+    const filePromises = files.map((file) => {
+      return new Promise<void>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imageData = {
+            preview: e.target?.result as string,
+            file: file,
+          };
+          console.log("Adding image data:", imageData);
+          images.value.push(imageData);
+          resolve();
+        };
+        reader.readAsDataURL(file);
+      });
     });
+
+    // Wait for all files to be processed, then emit
+    await Promise.all(filePromises);
+    console.log("All files processed, emitting images:", images.value);
     emit("imagesUpdated", images.value);
   }
 

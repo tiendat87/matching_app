@@ -303,7 +303,7 @@
             </p>
           </div>
 
-          <ImageUpload @update:images="handleImagesUpdate" />
+          <ImageUpload @imagesUpdated="handleImagesUpdate" />
           <!-- Error Message -->
           <div
             v-if="error"
@@ -337,11 +337,10 @@
 </template>
 
 <script setup lang="ts">
-import { useProfileStore } from "../stores/profile";
+import { useProfileStore } from "../stores/profile.store";
 import { storeToRefs } from "pinia";
 import { HomeIcon } from "@heroicons/vue/24/solid";
 import CityAutocomplete from "./CityAutocomplete.vue";
-import ImageUploader from "./ImageUploader.vue";
 import ImageUpload from "./ImageUpload.vue";
 // Use the profile store
 const profileStore = useProfileStore();

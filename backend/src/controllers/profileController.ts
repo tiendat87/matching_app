@@ -3,18 +3,57 @@ import Profile from "../models/Profile";
 import ProfileImage from "../models/Image";
 import { computeAllMatches } from "../services/matchingService";
 import { sendMatchReport } from "../services/emailService";
+import cloudinary from "../config/cloudinary";
 
 export async function createProfile(
   req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const profile = await Profile.create(req.body);
-    res.status(201).json(profile);
+    // Handle both JSON and FormData requests
+    let profileData = req.body;
+
+    // If request has files, it's FormData - parse the profile data
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      // Basic validation for required fields
+      if (
+        !profileData.displayName ||
+        !profileData.email ||
+        !profileData.phoneNumber
+      ) {
+        res.status(400).json({
+          error: "Missing required fields: displayName, email, phoneNumber",
+        });
+        return;
+      }
+
+      // Parse interests array from JSON string
+      if (profileData.interests && typeof profileData.interests === "string") {
+        try {
+          profileData.interests = JSON.parse(profileData.interests);
+        } catch (e) {
+          res.status(400).json({ error: "Invalid interests format" });
+          return;
+        }
+      }
+
+      // Convert string numbers to actual numbers
+      if (profileData.lookingForAgeMin) {
+        profileData.lookingForAgeMin = parseInt(profileData.lookingForAgeMin);
+      }
+      if (profileData.lookingForAgeMax) {
+        profileData.lookingForAgeMax = parseInt(profileData.lookingForAgeMax);
+      }
+    }
+
+    const profile = await Profile.create(profileData);
+
+    res.status(200).json(profile);
   } catch (error: any) {
     if (error.name === "SequelizeUniqueConstraintError") {
       res.status(400).json({ error: "Email already exists" });
     } else {
+      console.error("Create profile error:", error);
       res.status(500).json({ error: "Failed to create profile" });
     }
   }

@@ -16,6 +16,7 @@ export interface ProfileData {
   interests: string[];
   bio?: string;
   email: string;
+  images?: File[];
 }
 
 export async function submitProfile(data: ProfileData) {

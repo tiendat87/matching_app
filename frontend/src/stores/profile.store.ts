@@ -1,6 +1,10 @@
 import { defineStore } from "pinia";
 import { ref, computed, watch } from "vue";
-import { submitProfile, ProfileData } from "../api/profiles";
+import {
+  submitProfile,
+  ProfileData,
+  uploadProfileImages,
+} from "../api/profiles";
 import { calculateAgeRange } from "../utils/ageCalculator";
 
 export const useProfileStore = defineStore("profile", () => {
@@ -62,6 +66,7 @@ export const useProfileStore = defineStore("profile", () => {
     federalState: "" as any,
     interests: [],
     bio: "",
+    images: [],
   });
 
   const loading = ref(false);
@@ -288,9 +293,15 @@ export const useProfileStore = defineStore("profile", () => {
         ...formData.value,
         lookingFor: lookingForValue.value!,
       };
-      await submitProfile(formData.value);
+
+      console.log("Submitting profile with images:", formData.value.images);
+      const profile = await submitProfile(formData.value);
+      console.log("Profile created successfully:", profile);
       success.value = true;
 
+      if (formData.value.images && formData.value.images.length > 0) {
+        await uploadProfileImages(profile.id, formData.value.images);
+      }
       // Reset form
       formData.value = {
         displayName: "",
@@ -306,6 +317,7 @@ export const useProfileStore = defineStore("profile", () => {
         federalState: "" as any,
         interests: [],
         bio: "",
+        images: [],
       };
 
       setTimeout(() => {
@@ -340,6 +352,7 @@ export const useProfileStore = defineStore("profile", () => {
       federalState: "" as any,
       interests: [],
       bio: "",
+      images: [],
     };
     // Reset all errors
     error.value = "";
@@ -353,6 +366,22 @@ export const useProfileStore = defineStore("profile", () => {
     birthdateError.value = "";
     genderError.value = "";
     success.value = false;
+  };
+
+  const handleImagesUpdate = (images: any[]) => {
+    console.log("Images updated:", images);
+    console.log("Images length:", images.length);
+    console.log(
+      "Images with files:",
+      images.filter((img) => img.file)
+    );
+
+    formData.value.images = images
+      .filter((img) => img.file)
+      .map((img) => img.file);
+
+    console.log("FormData images after update:", formData.value.images);
+    console.log("FormData images length:", formData.value.images.length);
   };
 
   return {
@@ -388,5 +417,6 @@ export const useProfileStore = defineStore("profile", () => {
     validateForm,
     submitProfileData,
     resetForm,
+    handleImagesUpdate,
   };
 });
