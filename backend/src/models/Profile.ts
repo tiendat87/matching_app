@@ -45,18 +45,18 @@ Profile.init(
     },
     lookingForAgeMin: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       validate: {
         min: 18,
-        max: 99,
+        max: 75,
       },
     },
     lookingForAgeMax: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       validate: {
         min: 18,
-        max: 99,
+        max: 75,
       },
     },
     city: {
@@ -64,25 +64,8 @@ Profile.init(
       allowNull: false,
     },
     federalState: {
-      type: DataTypes.ENUM(
-        "baden-wuerttemberg",
-        "bayern",
-        "berlin",
-        "brandenburg",
-        "bremen",
-        "hamburg",
-        "hessen",
-        "mecklenburg-vorpommern",
-        "niedersachsen",
-        "nordrhein-westfalen",
-        "rheinland-pfalz",
-        "saarland",
-        "sachsen",
-        "sachsen-anhalt",
-        "schleswig-holstein",
-        "thueringen"
-      ),
-      allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     phoneNumber: {
       type: DataTypes.STRING,

@@ -4,6 +4,27 @@ export interface StateDistance {
     [key: string]: number; // Distance score 0-100
   };
 }
+function normalizeStateName(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss")
+    .replace(/\s+/g, "-") // thay space bằng gạch nối
+    .normalize("NFD") // tách dấu Unicode
+    .replace(/[\u0300-\u036f]/g, ""); // bỏ dấu còn sót
+}
+
+export function getStateDistance(state1: string, state2: string): number {
+  const s1 = normalizeStateName(state1);
+  const s2 = normalizeStateName(state2);
+
+  if (!stateDistances[s1] || !stateDistances[s1][s2]) {
+    return 0; // Unknown states
+  }
+  return stateDistances[s1][s2];
+}
 
 // Define neighboring relationships and distance scores
 // 100 = same state, 80 = direct neighbor, 50 = one state between, 20 = far apart
@@ -297,13 +318,6 @@ export const stateDistances: StateDistance = {
     saarland: 30,
   },
 };
-
-export function getStateDistance(state1: string, state2: string): number {
-  if (!stateDistances[state1] || !stateDistances[state1][state2]) {
-    return 0; // Unknown states
-  }
-  return stateDistances[state1][state2];
-}
 
 // Display names for federal states
 export const stateDisplayNames: { [key: string]: string } = {

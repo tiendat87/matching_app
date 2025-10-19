@@ -9,6 +9,7 @@ async function startServer() {
     // Test database connection
     await sequelize.authenticate();
     console.log("Database connection established");
+    await sequelize.sync({ force: true }); // WARNING: This drops and recreates all tables!
 
     // Sync database
     await sequelize.sync({ alter: true });

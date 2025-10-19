@@ -5,7 +5,7 @@
       v-model="cityQuery"
       @input="onInput"
       @keydown="onKeydown"
-      placeholder="Chọn thành phố..."
+      placeholder=""
       class="w-full"
     />
 

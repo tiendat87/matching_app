@@ -1,70 +1,190 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-r from-sky-800 to-fuchsia-300">
-    <header class="">
-      <div class="container mx-auto px-4 py-6">
-        <h1 class="text-4xl font-bold text-center text-gray-50">
-          Chào mừng bạn đến với Kết nối trái tim! 💖
+  <div
+    class="min-h-screen relative overflow-hidden bg-gradient-to-r from-sky-800 via-purple-700 to-fuchsia-400 animate-gradient-x"
+  >
+    <!-- Heart Particles -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div
+        v-for="n in 50"
+        :key="n"
+        class="heart animate-heart"
+        :style="randomHeartStyle()"
+      >
+        ❤️
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="py-16 relative z-10">
+      <div class="container mx-auto px-4 text-center">
+        <h1
+          class="text-5xl md:text-6xl font-extrabold text-white animate-fadeInDown"
+        >
+          Chào mừng bạn đến với
+          <span class="text-yellow-300">Kết nối trái tim! 💖</span>
         </h1>
-        <p class="text-center text-gray-500 mt-2"></p>
+        <p
+          class="text-lg md:text-xl text-gray-200 mt-4 animate-fadeIn delay-200"
+        >
+          Nơi bạn có thể gặp gỡ người phù hợp, an toàn và dễ sử dụng
+        </p>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-12">
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-16 relative z-10">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold text-white mb-6"></h2>
-        <p class="text-xl text-white mb-8 font-light">
+        <p class="text-xl text-white mb-12 font-light animate-fadeIn delay-400">
           Bạn đang tìm kiếm một nơi gặp gỡ người phù hợp, an toàn và dễ sử dụng?
-          Kết nối trái tim ra đời để giúp bạn: Đăng ký nhanh chóng: Điền thông
-          tin cơ bản, sở thích, mong muốn trong mối quan hệ và số điện thoại
-          thật, chỉ trong vài bước. Ghép đôi thông minh: Hệ thống tự động phân
-          tích dữ liệu và đề xuất những người phù hợp nhất dựa trên sở thích,
-          tính cách và các tiêu chí bạn chọn. Bảo vệ cộng đồng: Xác thực số điện
-          thoại giúp lọc spam, tài khoản giả mạo và các hành vi lừa đảo. Bảo mật
-          tuyệt đối: Thông tin cá nhân của bạn được bảo mật và chỉ hiển thị
-          những gì cần thiết cho việc ghép đôi. Dễ dàng sử dụng: Giao diện trực
-          quan, thân thiện, giúp bạn nhanh chóng tạo hồ sơ và khám phá những kết
-          nối tiềm năng. Mục tiêu của chúng tôi: tạo ra một môi trường hẹn hò
-          minh bạch, an toàn và hiệu quả, nơi bạn có thể gặp gỡ những người thực
-          sự phù hợp với mình. Hãy bắt đầu tạo hồ sơ của bạn ngay hôm nay và
-          trải nghiệm cách hẹn hò trực tuyến trở nên dễ dàng, an toàn và thú vị
-          hơn bao giờ hết!
+          <br /><br />
+          <span class="font-semibold">Kết nối trái tim</span> ra đời để giúp
+          bạn: đăng ký nhanh chóng, ghép đôi thông minh, bảo vệ cộng đồng và bảo
+          mật tuyệt đối.
         </p>
 
-        <div class="bg-slate-100 rounded-lg shadow-lg p-8">
-          <h3 class="text-2xl font-semibold text-gray-800 mb-4">
+        <!-- Card -->
+        <div
+          class="bg-white rounded-2xl shadow-2xl p-8 transform transition duration-500 hover:scale-105 animate-fadeIn delay-600"
+        >
+          <h3 class="text-3xl font-bold text-gray-800 mb-4 animate-fadeInUp">
             Hãy đăng ký ngay
           </h3>
-          <p class="text-gray-600 mb-6">
+          <p class="text-gray-600 mb-6 animate-fadeInUp delay-100">
             Điền thông tin của bạn và chúng tôi sẽ tìm một nửa phù hợp nhất
           </p>
-          <div class="flex gap-4 justify-center">
+          <div class="flex gap-6 justify-center">
             <router-link
               to="/profile"
-              class="inline-block bg-slate-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-slate-700 transition-colors"
+              @click.native="showConfetti"
+              class="inline-block bg-gradient-to-r from-pink-500 to-red-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl animate-fadeInUp delay-200"
             >
               Điền thông tin
             </router-link>
-            <!-- <router-link
-              to="/"
-              class="inline-block bg-gray-200 text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
-            >
-              Home
-            </router-link> -->
           </div>
         </div>
       </div>
     </main>
 
-    <!-- <footer class="bg-white shadow-md mt-12">
-      <div class="container mx-auto px-4 py-6">
-        <p class="text-center text-gray-600">
-          © 2024 FindYourMatch. All rights reserved.
+    <!-- Footer -->
+    <footer
+      class="bg-white bg-opacity-20 backdrop-blur-md shadow-md mt-12 relative z-10"
+    >
+      <div class="container mx-auto px-4 py-6 text-center">
+        <p class="text-gray-100">
+          © 2025 Kết nối trái tim. All rights reserved.
         </p>
       </div>
-    </footer> -->
+    </footer>
+
+    <!-- Confetti Canvas -->
+    <canvas
+      ref="confettiCanvas"
+      class="absolute inset-0 pointer-events-none"
+    ></canvas>
   </div>
 </template>
 
 <script setup lang="ts">
-// Home page component
+import { ref, onMounted } from "vue";
+import confetti from "canvas-confetti";
+
+const confettiCanvas = ref<HTMLCanvasElement | null>(null);
+
+const showConfetti = () => {
+  if (confettiCanvas.value) {
+    const myConfetti = confetti.create(confettiCanvas.value, {
+      resize: true,
+      useWorker: true,
+    });
+    myConfetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+    });
+  }
+};
+
+// Heart particle random style
+const randomHeartStyle = () => {
+  const size = Math.floor(Math.random() * 20 + 10); // 10px - 30px
+  const left = Math.floor(Math.random() * 100) + "%";
+  const delay = Math.random() * 5 + "s";
+  const duration = Math.random() * 10 + 5 + "s";
+  return {
+    left,
+    fontSize: size + "px",
+    animationDelay: delay,
+    animationDuration: duration,
+  };
+};
 </script>
+
+<style scoped>
+/* Gradient animation */
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 20s ease infinite;
+}
+
+/* Fade in animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn {
+  animation: fadeIn 1s ease forwards;
+}
+.animate-fadeInUp {
+  animation: fadeIn 1s ease forwards;
+}
+.animate-fadeInDown {
+  animation: fadeIn 1s ease forwards;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+.delay-200 {
+  animation-delay: 0.2s;
+}
+.delay-400 {
+  animation-delay: 0.4s;
+}
+.delay-600 {
+  animation-delay: 0.6s;
+}
+
+/* Heart particle animation */
+@keyframes floatHeart {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+.heart {
+  position: absolute;
+  bottom: -50px;
+  animation-name: floatHeart;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+</style>

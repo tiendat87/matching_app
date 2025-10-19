@@ -303,6 +303,7 @@
             </p>
           </div>
 
+          <ImageUpload @update:images="handleImagesUpdate" />
           <!-- Error Message -->
           <div
             v-if="error"
@@ -340,7 +341,8 @@ import { useProfileStore } from "../stores/profile";
 import { storeToRefs } from "pinia";
 import { HomeIcon } from "@heroicons/vue/24/solid";
 import CityAutocomplete from "./CityAutocomplete.vue";
-
+import ImageUploader from "./ImageUploader.vue";
+import ImageUpload from "./ImageUpload.vue";
 // Use the profile store
 const profileStore = useProfileStore();
 // Extract reactive state and getters from the store
@@ -379,6 +381,7 @@ const {
   validateBirthdate,
   validateGender,
   submitProfileData,
+  handleImagesUpdate,
 } = profileStore;
 
 // Calculate min and max dates for birthdate picker

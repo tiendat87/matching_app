@@ -10,6 +10,6 @@ ADD COLUMN IF NOT EXISTS "facebookProfile" VARCHAR(255);
 UPDATE profiles 
 SET 
   "lookingForAgeMin" = 18,
-  "lookingForAgeMax" = 99,
+  "lookingForAgeMax" = 75,
   "federalState" = 'bayern'
 WHERE "lookingForAgeMin" IS NULL;

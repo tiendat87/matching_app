@@ -36,10 +36,10 @@ export const profileSchema = z
     birthdate: z.string().transform((str) => new Date(str)),
     gender: z.enum(["male", "female", "other"]),
     lookingFor: z.enum(["male", "female", "both"]),
-    lookingForAgeMin: z.number().int().min(18).max(99),
-    lookingForAgeMax: z.number().int().min(18).max(99),
+    lookingForAgeMin: z.number().int().min(18).max(75),
+    lookingForAgeMax: z.number().int().min(18).max(75),
     city: z.string().min(2).max(100),
-    federalState: z.enum(germanStates),
+    federalState: z.string().min(2).max(50),
     phoneNumber: z
       .string()
       .regex(phoneRegex, {

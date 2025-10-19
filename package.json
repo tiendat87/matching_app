@@ -8,5 +8,13 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "@vuepic/vue-datepicker": "^11.0.3",
+    "@vueuse/motion": "^3.0.3",
+    "canvas-confetti": "^1.9.3",
+    "motion": "^12.23.24",
+    "vue-date-picker": "^2.5.0"
   }
 }

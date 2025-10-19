@@ -10,23 +10,7 @@ export interface ProfileData {
   lookingForAgeMin: number;
   lookingForAgeMax: number;
   city: string;
-  federalState:
-    | "baden-wuerttemberg"
-    | "bayern"
-    | "berlin"
-    | "brandenburg"
-    | "bremen"
-    | "hamburg"
-    | "hessen"
-    | "mecklenburg-vorpommern"
-    | "niedersachsen"
-    | "nordrhein-westfalen"
-    | "rheinland-pfalz"
-    | "saarland"
-    | "sachsen"
-    | "sachsen-anhalt"
-    | "schleswig-holstein"
-    | "thueringen";
+  federalState: string;
   phoneNumber: string;
   facebookProfile?: string;
   interests: string[];
@@ -42,5 +26,24 @@ export async function citySuggestion(cityQuery: string) {
   const response = await axios.get(`${API_BASE}/city/suggestions`, {
     params: { q: cityQuery },
   });
+  return response.data;
+}
+// Add this function to the existing file
+export async function uploadProfileImages(profileId: number, files: File[]) {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  const response = await axios.post(
+    `${API_BASE}/profiles/${profileId}/images`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
   return response.data;
 }

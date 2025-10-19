@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Profile from "../models/Profile";
+import ProfileImage from "../models/Image";
 import { computeAllMatches } from "../services/matchingService";
 import { sendMatchReport } from "../services/emailService";
 
@@ -22,11 +23,53 @@ export async function createProfile(
 export async function getProfiles(req: Request, res: Response): Promise<void> {
   try {
     const profiles = await Profile.findAll({
-      attributes: { exclude: ["email"] }, // Don't expose emails
+      attributes: { exclude: ["email", "phoneNumber"] }, // Don't expose sensitive data
+      include: [
+        {
+          model: ProfileImage,
+          as: "images",
+          attributes: ["id", "imageUrl", "thumbnailUrl", "isPrimary", "order"],
+          order: [
+            ["isPrimary", "DESC"],
+            ["order", "ASC"],
+          ],
+        },
+      ],
     });
     res.json(profiles);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch profiles" });
+  }
+}
+
+export async function getProfileById(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const profileId = parseInt(req.params.id);
+
+    const profile = await Profile.findByPk(profileId, {
+      include: [
+        {
+          model: ProfileImage,
+          as: "images",
+          order: [
+            ["isPrimary", "DESC"],
+            ["order", "ASC"],
+          ],
+        },
+      ],
+    });
+
+    if (!profile) {
+      res.status(404).json({ error: "Profile not found" });
+      return;
+    }
+
+    res.json(profile);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch profile" });
   }
 }
 
