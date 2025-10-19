@@ -445,10 +445,10 @@ export const useProfileStore = defineStore("profile", () => {
     validateCity,
     validateBirthdate,
     validateGender,
+    validateFederalState,
     validateForm,
     submitProfileData,
     resetForm,
     handleImagesUpdate,
-    validateStep,
   };
 });

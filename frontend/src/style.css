@@ -168,6 +168,54 @@
   .scale-in {
     animation: scaleIn 0.2s ease-out;
   }
+  .gradient-bg {
+    @apply bg-gradient-to-r from-sky-800 to-fuchsia-300;
+  }
+  /* .gradient-text {
+    @apply text-white;
+  }
+  .gradient-border {
+    @apply border-gradient-to-r from-fuchsia-500 to-sky-500;
+  }
+  .gradient-shadow {
+    @apply shadow-gradient-to-r from-fuchsia-500 to-sky-500;
+  }
+  .gradient-hover {
+    @apply hover:from-fuchsia-600 hover:to-sky-600;
+  }
+  .gradient-active {
+    @apply active:from-fuchsia-700 active:to-sky-700;
+  }
+  .gradient-disabled {
+    @apply disabled:from-fuchsia-400 disabled:to-sky-400;
+  }
+  .gradient-focus {
+    @apply focus:from-fuchsia-300 focus:to-sky-300;
+  }
+  .gradient-hover:hover {
+    @apply hover:from-fuchsia-600 hover:to-sky-600;
+  }
+  .gradient-active:active {
+    @apply active:from-fuchsia-700 active:to-sky-700;
+  }
+  .gradient-disabled:disabled {
+    @apply disabled:from-fuchsia-400 disabled:to-sky-400;
+  }
+  .gradient-focus:focus {
+    @apply focus:from-fuchsia-300 focus:to-sky-300;
+  }
+  .gradient-hover:hover {
+    @apply hover:from-fuchsia-600 hover:to-sky-600;
+  }
+  .gradient-active:active {
+    @apply active:from-fuchsia-700 active:to-sky-700;
+  }
+  .gradient-disabled:disabled {
+    @apply disabled:from-fuchsia-400 disabled:to-sky-400;
+  }
+  .gradient-focus:focus {
+    @apply focus:from-fuchsia-300 focus:to-sky-300;
+  } */
 
   @keyframes scaleIn {
     from {

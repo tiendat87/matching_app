@@ -11,11 +11,7 @@
           v-for="n in totalSteps"
           :key="n"
           class="flex-1 h-2 mx-1 rounded-full transition-all duration-300"
-          :class="
-            n <= currentStep
-              ? 'bg-gradient-to-r from-fuchsia-500 to-sky-500'
-              : 'bg-gray-200'
-          "
+          :class="n <= currentStep ? 'gradient-bg' : 'bg-gray-200'"
         ></div>
       </div>
 
@@ -315,6 +311,7 @@ const {
   validateCity,
   validateBirthdate,
   validateGender,
+  validateFederalState,
   submitProfileData,
   handleImagesUpdate,
   validateFacebook,

@@ -67,7 +67,7 @@
 
     <!-- Footer -->
     <footer
-      class="bg-white bg-opacity-20 backdrop-blur-md shadow-md mt-12 relative z-10"
+      class="bg-white bg-opacity-20 backdrop-blur-md shadow-md bot-0 relative z-10"
     >
       <div class="container mx-auto px-4 py-6 text-center">
         <p class="text-gray-100">
@@ -77,10 +77,10 @@
     </footer>
 
     <!-- Confetti Canvas -->
-    <canvas
+    <!-- <canvas
       ref="confettiCanvas"
       class="absolute inset-0 pointer-events-none"
-    ></canvas>
+    ></canvas> -->
   </div>
 </template>
 

@@ -1,13 +1,24 @@
 <template>
   <div class="w-full relative">
-    <input
-      type="text"
-      v-model="cityQuery"
-      @input="onInput"
-      @keydown="onKeydown"
-      placeholder=""
-      class="input-modern"
-    />
+    <div class="relative">
+      <input
+        type="text"
+        v-model="cityQuery"
+        @input="onInput"
+        @keydown="onKeydown"
+        placeholder=""
+        class="input-modern"
+        :disabled="loading"
+      />
+      <div
+        v-if="loading"
+        class="absolute right-3 top-1/2 transform -translate-y-1/2"
+      >
+        <div
+          class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"
+        ></div>
+      </div>
+    </div>
 
     <ul
       v-if="suggestions.length"
@@ -59,6 +70,7 @@ const emit = defineEmits<{
 const cityQuery = ref(props.city); // binding input
 const suggestions = ref<City[]>([]);
 const error = ref("");
+const loading = ref(false);
 
 let debounceTimer: any;
 
@@ -87,6 +99,7 @@ const searchCity = async () => {
     return;
   }
 
+  loading.value = true;
   try {
     const data = await citySuggestion(cityQuery.value); // trả về City[]
     suggestions.value = data;
@@ -95,6 +108,8 @@ const searchCity = async () => {
     console.error("City search error:", err);
     suggestions.value = [];
     error.value = "Không thể tìm kiếm thành phố.";
+  } finally {
+    loading.value = false;
   }
 };
 const onKeydown = (e: KeyboardEvent) => {
@@ -121,15 +136,54 @@ const onKeydown = (e: KeyboardEvent) => {
   }
 };
 
+// --- Map state name to federal state value ---
+const mapStateToValue = (stateName: string): string => {
+  const stateMapping: { [key: string]: string } = {
+    "Baden-Württemberg": "baden-wuerttemberg",
+    Bayern: "bayern",
+    Berlin: "berlin",
+    Brandenburg: "brandenburg",
+    "Freie Hansestadt Bremen": "bremen",
+    Hamburg: "hamburg",
+    Hessen: "hessen",
+    "Mecklenburg-Vorpommern": "mecklenburg-vorpommern",
+    Niedersachsen: "niedersachsen",
+    "Nordrhein-Westfalen": "nordrhein-westfalen",
+    "Rheinland-Pfalz": "rheinland-pfalz",
+    Saarland: "saarland",
+    Sachsen: "sachsen",
+    "Sachsen-Anhalt": "sachsen-anhalt",
+    "Schleswig-Holstein": "schleswig-holstein",
+    Thüringen: "thueringen",
+  };
+
+  return stateMapping[stateName] || "";
+};
+
 // --- Khi user chọn city ---
 const selectCity = (c: City) => {
   cityQuery.value = c.name;
   suggestions.value = [];
   error.value = "";
 
+  // Map state name to federal state value
+  let federalStateValue = c.state ? mapStateToValue(c.state) : "";
+  if (c.name === "Berlin") {
+    federalStateValue = "berlin";
+  }
+  if (c.name === "Hamburg") {
+    federalStateValue = "hamburg";
+  }
+
+  console.log("City selected:", {
+    name: c.name,
+    state: c.state,
+    mappedValue: federalStateValue,
+  });
+
   // Emit để parent cập nhật v-model
   emit("update:city", c.name);
-  emit("update:federalState", c.state || c.name);
+  emit("update:federalState", federalStateValue);
 };
 </script>
 
