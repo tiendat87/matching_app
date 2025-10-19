@@ -194,6 +194,37 @@ export const useProfileStore = defineStore("profile", () => {
       }
     }
   };
+  const validateStep = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        validateDisplayName();
+        validateEmail();
+        validatePhone();
+        validateBirthdate();
+        return !(
+          displayNameError.value ||
+          emailError.value ||
+          phoneError.value ||
+          birthdateError.value
+        );
+      case 2:
+        validateGender();
+        validateCity();
+        validateFederalState();
+        return !(
+          genderError.value ||
+          cityError.value ||
+          federalStateError.value
+        );
+      case 3:
+        return (
+          formData.value.interests.length > 0 &&
+          formData.value.interests.length <= 10
+        );
+      default:
+        return true;
+    }
+  };
 
   const validateGender = () => {
     if (!formData.value.gender) {
@@ -418,5 +449,6 @@ export const useProfileStore = defineStore("profile", () => {
     submitProfileData,
     resetForm,
     handleImagesUpdate,
+    validateStep,
   };
 });

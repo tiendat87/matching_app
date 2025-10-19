@@ -6,7 +6,11 @@ export default {
     "./src/assets/style.css",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        inter: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 };

@@ -44,7 +44,7 @@
 
         <!-- Card -->
         <div
-          class="bg-white rounded-2xl shadow-2xl p-8 transform transition duration-500 hover:scale-105 animate-fadeIn delay-600"
+          class="bg-white rounded-2xl shadow-2xl p-8 transform transition duration-500 hover:scale-105 animate-fadeIn"
         >
           <h3 class="text-3xl font-bold text-gray-800 mb-4 animate-fadeInUp">
             Hãy đăng ký ngay
@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import confetti from "canvas-confetti";
 
 const confettiCanvas = ref<HTMLCanvasElement | null>(null);

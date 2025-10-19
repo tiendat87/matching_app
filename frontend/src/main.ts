@@ -3,6 +3,8 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import "./style.css"; // Tailwind CSS
+import "@fontsource/inter/index.css";
+
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";

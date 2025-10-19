@@ -4,61 +4,47 @@
       Profile Images (Max 6)
     </label>
 
-    <!-- Image Preview Grid -->
-    <div class="grid grid-cols-3 gap-4">
-      <!-- Existing Images -->
+    <div class="upload-grid">
       <div
         v-for="(image, index) in images"
         :key="image.id || index"
-        class="relative group"
+        class="upload-item"
       >
         <img
           :src="image.thumbnailUrl || image.preview"
           :alt="`Profile image ${index + 1}`"
-          class="w-full h-32 object-cover rounded-lg"
+          class="upload-image"
         />
-        <div
-          class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center space-x-2"
-        >
+        <div class="upload-overlay">
           <button
             v-if="!image.isPrimary"
             @click="setPrimary(image)"
-            type="button"
-            class="p-1 bg-white rounded-full"
-            title="Set as primary"
+            class="p-2 bg-white rounded-full shadow hover:bg-yellow-100 transition-colors"
           >
-            <StarIcon class="w-4 h-4 text-yellow-500" />
+            <StarIcon class="w-5 h-5 text-yellow-500" />
           </button>
           <button
             @click="removeImage(image)"
-            type="button"
-            class="p-1 bg-white rounded-full"
-            title="Remove"
+            class="p-2 bg-white rounded-full shadow hover:bg-red-100 transition-colors"
           >
-            <TrashIcon class="w-4 h-4 text-red-500" />
+            <TrashIcon class="w-5 h-5 text-red-500" />
           </button>
         </div>
-        <div v-if="image.isPrimary" class="absolute top-2 left-2">
-          <span class="px-2 py-1 bg-yellow-500 text-white text-xs rounded"
-            >Primary</span
-          >
-        </div>
+        <div v-if="image.isPrimary" class="upload-badge">Primary</div>
       </div>
 
-      <!-- Upload Button -->
       <div
         v-if="images.length < 6"
         @click="triggerFileInput"
-        class="border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center cursor-pointer hover:border-pink-500 transition-colors"
+        class="upload-button"
       >
         <div class="text-center">
-          <CameraIcon class="w-8 h-8 text-gray-400 mx-auto" />
+          <CameraIcon class="w-8 h-8 text-gray-400 mx-auto animate-pulse" />
           <span class="text-sm text-gray-500">Add Photo</span>
         </div>
       </div>
     </div>
 
-    <!-- Hidden File Input -->
     <input
       ref="fileInput"
       type="file"
@@ -68,26 +54,14 @@
       class="hidden"
     />
 
-    <!-- Upload Progress -->
-    <div
-      v-if="uploading"
-      class="bg-blue-50 border border-blue-200 rounded-lg p-4"
-    >
-      <div class="flex items-center">
-        <div
-          class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"
-        ></div>
-        <span class="text-sm text-blue-700">Uploading images...</span>
-      </div>
+    <div v-if="uploading" class="upload-progress">
+      <div
+        class="rounded-full h-4 w-4 border-b-2 border-blue-600 animate-spin"
+      ></div>
+      <span class="text-sm text-blue-700">Uploading images...</span>
     </div>
 
-    <!-- Error Message -->
-    <div
-      v-if="uploadError"
-      class="bg-red-50 border border-red-200 rounded-lg p-4"
-    >
-      <p class="text-sm text-red-700">{{ uploadError }}</p>
-    </div>
+    <div v-if="uploadError" class="upload-error">{{ uploadError }}</div>
   </div>
 </template>
 
@@ -261,3 +235,16 @@ defineExpose({
   },
 });
 </script>
+<style>
+.group:hover .group-hover\:bg-opacity-40 {
+  background-opacity: 0.4;
+}
+
+img {
+  transition: transform 0.2s ease;
+}
+
+div.group:hover img {
+  transform: scale(1.05);
+}
+</style>

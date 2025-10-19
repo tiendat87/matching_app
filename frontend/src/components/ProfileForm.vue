@@ -1,355 +1,301 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-r from-sky-800 to-fuchsia-300">
-    <!-- Navigation Header -->
-    <header class="bg-white shadow-md">
-      <div class="container mx-auto px-4 py-4">
-        <div class="flex justify-between items-center">
-          <router-link
-            to="/"
-            class="text-slate-600 hover:text-slate-700 font-semibold"
-          >
-            <div class="flex flex-row">
-              <HomeIcon class="w-6 h-6 pr-1" />Trang chủ
-            </div>
-          </router-link>
-          <div></div>
-          <!-- Spacer for centering -->
-        </div>
+  <div
+    class="min-h-screen bg-gradient-to-r from-sky-800 to-fuchsia-300 flex justify-center py-10"
+  >
+    <div
+      class="w-full max-w-3xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 relative overflow-hidden"
+    >
+      <!-- Step indicator -->
+      <div class="flex justify-between mb-8">
+        <div
+          v-for="n in totalSteps"
+          :key="n"
+          class="flex-1 h-2 mx-1 rounded-full transition-all duration-300"
+          :class="
+            n <= currentStep
+              ? 'bg-gradient-to-r from-fuchsia-500 to-sky-500'
+              : 'bg-gray-200'
+          "
+        ></div>
       </div>
-    </header>
 
-    <main class="container mx-auto px-4 py-8">
-      <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <h2 class="text-3xl font-bold text-center mb-8 text-gray-500">
-          Thông tin của bạn
-        </h2>
+      <!-- Step transitions -->
+      <transition name="fade" mode="out-in">
+        <!-- STEP 1: Personal info -->
+        <form
+          v-if="currentStep === 1"
+          key="step1"
+          @submit.prevent="goNextStep"
+          class="space-y-6"
+        >
+          <h2 class="text-2xl font-bold text-gray-600 text-center">
+            Bước 1: Thông tin cá nhân
+          </h2>
 
-        <form @submit.prevent="handleSubmit" class="space-y-6">
-          <!-- Display Name -->
           <div>
-            <label
-              for="displayName"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Họ và Tên *</label
             >
-              Họ và Tên *
-            </label>
             <input
               v-model="formData.displayName"
-              id="displayName"
               type="text"
-              required
-              minlength="2"
-              maxlength="50"
               @input="validateDisplayName"
-              :class="[displayNameError ? 'input-error' : 'border-gray-300']"
-              placeholder="John Doe"
+              required
+              class="input-modern"
             />
-            <p v-if="displayNameError" class="mt-1 text-sm text-red-600">
+            <p v-if="displayNameError" class="error-text">
               {{ displayNameError }}
             </p>
           </div>
 
-          <!-- Email -->
           <div>
-            <label
-              for="email"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Email *</label
             >
-              Địa chỉ Email *
-            </label>
             <input
               v-model="formData.email"
-              id="email"
               type="email"
               required
               @input="validateEmail"
-              :class="[emailError ? 'input-error' : 'border-gray-300']"
-              placeholder="john@example.com"
+              class="input-modern"
             />
-            <p v-if="emailError" class="mt-1 text-sm text-red-600">
-              {{ emailError }}
-            </p>
+            <p v-if="emailError" class="error-text">{{ emailError }}</p>
           </div>
 
-          <!-- Phone Number -->
           <div>
-            <label
-              for="phoneNumber"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Số điện thoại *</label
             >
-              Số điện thoại *
-            </label>
             <input
               v-model="formData.phoneNumber"
-              id="phoneNumber"
               type="tel"
               required
               @input="validatePhone"
-              :class="[phoneError ? 'input-error' : 'border-gray-300']"
-              placeholder="+49 151 12345678 or 0151 12345678"
+              class="input-modern"
             />
-            <p v-if="phoneError" class="mt-1 text-sm text-red-600">
-              {{ phoneError }}
-            </p>
+            <p v-if="phoneError" class="error-text">{{ phoneError }}</p>
           </div>
-
-          <!-- Facebook Profile -->
           <div>
-            <label
-              for="facebookProfile"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Đường link Facebook</label
             >
-              Đường link Facebook
-            </label>
+
             <input
               v-model="formData.facebookProfile"
               id="facebookProfile"
               type="url"
               @blur="validateFacebook"
-              :class="[facebookError ? 'input-error' : 'border-gray-300']"
+              class="input-modern"
               placeholder="https://facebook.com/yourprofile"
             />
             <p v-if="facebookError" class="mt-1 text-sm text-red-600">
               {{ facebookError }}
             </p>
           </div>
-
-          <!-- Birthdate -->
           <div>
-            <label
-              for="birthdate"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Ngày sinh *</label
             >
-              Ngày tháng năm sinh *
-            </label>
-
             <VueDatePicker
               v-model="formData.birthdate"
-              class="rounded-xl"
               :auto-apply="true"
               :close-on-auto-apply="true"
               locale="vi"
               :flow="['year', 'month', 'calendar']"
               format="dd.MM.yyyy"
-              @input="validateBirthdate"
-              :require="true"
               :min-date="minDate"
               :max-date="maxDate"
-              :start-date="maxDate"
-              placeholder="Chọn ngày tháng năm sinh"
-              :time-picker="false"
-              :class="[birthdateError ? 'input-error' : 'border-gray-300']"
-            >
-            </VueDatePicker>
-            <p v-if="birthdateError" class="mt-1 text-sm text-red-600">
-              {{ birthdateError }}
-            </p>
+              placeholder="Chọn ngày sinh"
+              :teleport="true"
+              @input="validateBirthdate"
+              class="input-modern cursor-pointer"
+            />
+            <p v-if="birthdateError" class="error-text">{{ birthdateError }}</p>
           </div>
 
-          <!-- Gender -->
+          <div class="flex justify-end pt-4">
+            <button type="submit" class="btn-primary">Tiếp tục</button>
+          </div>
+        </form>
+
+        <!-- STEP 2: Gender + Location -->
+        <form
+          v-else-if="currentStep === 2"
+          key="step2"
+          @submit.prevent="goNextStep"
+          class="space-y-6"
+        >
+          <h2 class="text-2xl font-bold text-gray-600 text-center">
+            Bước 2: Giới tính & địa chỉ
+          </h2>
+
           <div>
-            <label
-              for="gender"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Giới tính *</label
             >
-              Giới tính của bạn *
-            </label>
             <select
               v-model="formData.gender"
-              id="gender"
-              required
               @change="validateGender"
-              :class="[genderError ? 'border-red-500' : 'border-gray-300']"
+              class="input-modern"
             >
-              <!-- <option value="">Chọn giới tính</option> -->
               <option value="male">Nam</option>
               <option value="female">Nữ</option>
-              <!-- <option value="other">Other</option> -->
             </select>
-            <p v-if="genderError" class="mt-1 text-sm text-red-600">
-              {{ genderError }}
-            </p>
+            <p v-if="genderError" class="error-text">{{ genderError }}</p>
           </div>
 
-          <!-- Age Range Preference -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Độ tuổi bạn đang tìm kiếm *
-            </label>
-            <div class="flex space-x-4">
-              <div class="flex-1">
-                <input
-                  v-model.number="formData.lookingForAgeMin"
-                  type="number"
-                  min="18"
-                  max="99"
-                  required
-                  :class="['border-gray-300']"
-                  placeholder="Min age"
-                />
-              </div>
-              <span class="flex items-center">to</span>
-              <div class="flex-1">
-                <input
-                  v-model.number="formData.lookingForAgeMax"
-                  type="number"
-                  min="18"
-                  max="99"
-                  required
-                  :class="['border-gray-300']"
-                  placeholder="Max age"
-                />
-              </div>
-            </div>
-            <p v-if="ageRangeError" class="mt-1 text-sm text-red-600">
-              {{ ageRangeError }}
-            </p>
-          </div>
-
-          <!-- City -->
-          <div>
-            <label
-              for="city"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Thành phố *</label
             >
-              Thành phố *
-            </label>
             <CityAutocomplete
               v-model:city="formData.city"
               v-model:federalState="formData.federalState"
               :error="cityError"
               @input="validateCity"
             />
-
-            <p v-if="cityError" class="mt-1 text-sm text-red-600">
-              {{ cityError }}
-            </p>
+            <p v-if="cityError" class="error-text">{{ cityError }}</p>
           </div>
 
-          <!-- Federal State -->
           <div>
-            <label
-              for="federalState"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Tiểu bang *</label
             >
-              Tiểu bang *
-            </label>
             <select
               v-model="formData.federalState"
-              id="federalState"
+              class="input-modern"
               required
-              :class="[
-                federalStateError ? 'border-red-500' : 'border-gray-300',
-              ]"
-              class="w-full"
             >
-              <option value="">Select federal state</option>
+              <option value="">Chọn tiểu bang</option>
               <option
-                v-for="state in germanFederalStates"
+                v-for="state in store.germanFederalStates"
                 :key="state.value"
                 :value="state.value"
               >
                 {{ state.label }}
               </option>
             </select>
-            <p v-if="federalStateError" class="mt-1 text-sm text-red-600">
+            <p v-if="federalStateError" class="error-text">
               {{ federalStateError }}
             </p>
           </div>
 
+          <div class="flex justify-between pt-4">
+            <button type="button" class="btn-primary" @click="goPrevStep">
+              Quay lại
+            </button>
+            <button type="submit" class="btn-primary">Tiếp tục</button>
+          </div>
+        </form>
+
+        <!-- STEP 3: Interests + Bio + Images -->
+        <!-- STEP 3: Interests + Bio + Images -->
+        <form
+          v-else-if="currentStep === 3"
+          key="step3"
+          @submit.prevent="handleSubmit"
+          class="space-y-6"
+        >
+          <h2 class="text-2xl font-bold text-gray-600 text-center">
+            Bước 3: Sở thích & Ảnh
+          </h2>
+
+          <!-- Interests as pill buttons -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
-              Sở thích * (chọn ít nhất 1 và nhiều nhất 10)
+              Sở thích * (tối đa 10)
             </label>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <label
-                v-for="interest in availableInterests"
+              <button
+                v-for="interest in store.availableInterests"
                 :key="interest"
-                class="flex items-center cursor-pointer space-x-2"
+                type="button"
+                @click="toggleInterest(interest)"
+                :class="[
+                  'px-4 py-2 rounded-full border transition-all duration-200 ease-out transform focus:outline-none',
+                  formData.interests.includes(interest)
+                    ? 'bg-gradient-to-r from-fuchsia-500 to-sky-500 text-white scale-105 shadow-md'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100',
+                ]"
               >
-                <input
-                  type="checkbox"
-                  :value="interest"
-                  v-model="formData.interests"
-                  :disabled="
-                    !formData.interests.includes(interest) &&
-                    formData.interests.length >= 10
-                  "
-                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 disabled:opacity-50"
-                />
-                <span class="text-sm text-gray-700">{{ interest }}</span>
-              </label>
+                {{ interest }}
+              </button>
             </div>
+            <p v-if="ageRangeError" class="error-text">{{ ageRangeError }}</p>
           </div>
 
           <!-- Bio -->
           <div>
-            <label
-              for="bio"
-              class="block text-sm font-medium text-gray-700 mb-1"
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Giới thiệu bản thân</label
             >
-              Giới thiệu qua về bạn (optional)
-            </label>
             <textarea
               v-model="formData.bio"
-              id="bio"
-              rows="4"
-              maxlength="500"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="Tell us about yourself..."
+              rows="3"
+              class="input-modern"
+              placeholder="Giới thiệu ngắn về bạn..."
             ></textarea>
             <p class="text-xs text-gray-500 mt-1">
-              {{ formData.bio?.length || 0 }}/500 characters
+              {{ formData.bio?.length || 0 }}/500 ký tự
             </p>
           </div>
 
+          <!-- Image Upload -->
           <ImageUpload @imagesUpdated="handleImagesUpdate" />
-          <!-- Error Message -->
-          <div
-            v-if="error"
-            class="p-4 bg-red-50 border border-red-300 rounded-lg"
-          >
-            <p class="text-red-800">{{ error }}</p>
-          </div>
 
-          <!-- Success Message -->
-          <div
-            v-if="success"
-            class="p-4 bg-green-50 border border-green-300 rounded-lg"
-          >
-            <p class="text-green-800">Profile created successfully!</p>
+          <!-- Buttons -->
+          <div class="flex justify-between pt-4">
+            <button type="button" class="btn-primary" @click="goPrevStep">
+              Quay lại
+            </button>
+            <button
+              type="submit"
+              class="btn-primary"
+              :disabled="
+                loading ||
+                formData.interests.length === 0 ||
+                hasValidationErrors
+              "
+            >
+              {{ loading ? "Đang gửi..." : "Gửi thông tin" }}
+            </button>
           </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            :disabled="
-              loading || formData.interests.length === 0 || hasValidationErrors
-            "
-            class="w-full bg-slate-600 text-white py-2 px-4 rounded-lg hover:bg-slate-700 disabled:opacity-50"
-          >
-            {{ loading ? "Đang gửi..." : "Gửi thông tin" }}
-          </button>
         </form>
+      </transition>
+
+      <!-- Error & Success -->
+      <div
+        v-if="error"
+        class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"
+      >
+        {{ error }}
       </div>
-    </main>
+      <div
+        v-if="success"
+        class="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg"
+      >
+        Hồ sơ đã được gửi thành công!
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useProfileStore } from "../stores/profile.store";
-import { storeToRefs } from "pinia";
-import { HomeIcon } from "@heroicons/vue/24/solid";
 import CityAutocomplete from "./CityAutocomplete.vue";
 import ImageUpload from "./ImageUpload.vue";
-// Use the profile store
-const profileStore = useProfileStore();
-// Extract reactive state and getters from the store
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+import { storeToRefs } from "pinia";
+
+const store = useProfileStore();
 const {
   formData,
   loading,
   error,
   success,
+
   emailError,
   phoneError,
   facebookError,
@@ -360,30 +306,23 @@ const {
   birthdateError,
   genderError,
   hasValidationErrors,
-} = storeToRefs(profileStore);
+} = storeToRefs(store);
 
-// Get non-reactive data directly from the store
-const { availableInterests, germanFederalStates } = profileStore;
-
-// Debug logging
-console.log("ProfileForm initialized");
-console.log("availableInterests:", availableInterests);
-console.log("germanFederalStates:", germanFederalStates);
-
-// Extract actions from the store
 const {
   validateEmail,
   validatePhone,
-  validateFacebook,
   validateDisplayName,
   validateCity,
   validateBirthdate,
   validateGender,
   submitProfileData,
   handleImagesUpdate,
-} = profileStore;
+  validateFacebook,
+} = store;
 
-// Calculate min and max dates for birthdate picker
+const totalSteps = 3;
+const currentStep = ref(1);
+
 const today = new Date();
 const maxDate = new Date(
   today.getFullYear() - 18,
@@ -395,9 +334,47 @@ const minDate = new Date(
   today.getMonth(),
   today.getDate()
 );
+const toggleInterest = (interest: string) => {
+  if (formData.value.interests.includes(interest)) {
+    formData.value.interests = formData.value.interests.filter(
+      (i) => i !== interest
+    );
+  } else if (formData.value.interests.length < 10) {
+    formData.value.interests.push(interest);
+  }
+};
+// Step logic
+const goNextStep = () => {
+  const valid = store.validateStep(currentStep.value);
+  if (valid && currentStep.value < totalSteps) currentStep.value++;
+};
+const goPrevStep = () => {
+  if (currentStep.value > 1) currentStep.value--;
+};
 
-// Handle form submission
+// Submit
 const handleSubmit = async () => {
   await submitProfileData();
 };
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+button {
+  transition: all 0.2s ease;
+}
+button:active {
+  transform: scale(0.95);
+}
+</style>

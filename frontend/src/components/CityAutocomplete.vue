@@ -6,7 +6,7 @@
       @input="onInput"
       @keydown="onKeydown"
       placeholder=""
-      class="w-full"
+      class="input-modern"
     />
 
     <ul
